@@ -1,5 +1,8 @@
 package com.ecommerce.model;
 
+import com.ecommerce.exception.ValidationException;
+import com.ecommerce.util.AppUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -116,9 +119,7 @@ public class Product {
         this.specifications = specifications;
     }
 
-    /**
-     * Overrides parent to check if two products are same or not
-     */
+    /** Overrides parent to check if two products are same or not */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -134,9 +135,29 @@ public class Product {
                 Objects.equals(specifications, product.specifications);
     }
 
-    /**
-     * Overrides parent to check if two products are same or not
-     */
+    /** Validate whether the given product is valid or not */
+    public void isValid() {
+        if (AppUtils.isEmpty(id)) {
+            throw new ValidationException("Product id cannot be null or empty");
+        }
+        if (AppUtils.isEmpty(name)) {
+            throw new ValidationException("Product name cannot be null or empty");
+        }
+        if (AppUtils.isEmpty(type)) {
+            throw new ValidationException("Product type cannot be null or empty");
+        }
+        if (AppUtils.isEmpty(brand)) {
+            throw new ValidationException("Product brand cannot be null or empty");
+        }
+        if (price <= 0) {
+            throw new ValidationException("Product price should be greater than 0");
+        }
+        if (availableQuantity <= 0) {
+            throw new ValidationException("Product available quantity should be greater than 0");
+        }
+    }
+
+    /** Overrides parent to check if two products are same or not */
     @Override
     public int hashCode() {
         return Objects.hash(id, name, type, brand, price, availableQuantity,
@@ -175,8 +196,8 @@ public class Product {
 
         public ProductFilter() { }
 
-        public ProductFilter(String id, String name, String type, String brand, double maxPrice, double minPrice,
-                             int maxAvailableQuantity, int minAvailableQuantity) {
+        public ProductFilter(String id, String name, String type, String brand, Double maxPrice, Double minPrice,
+                             Integer maxAvailableQuantity, Integer minAvailableQuantity) {
             this.id = id;
             this.name = name;
             this.type = type;

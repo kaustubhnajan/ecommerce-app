@@ -49,16 +49,16 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             String sql = "from Product p where p.price ";
             Query query = null;
             if (productFilter.getMinPrice() != null && productFilter.getMaxPrice() != null) {
-                sql += "> :minPrice and and p.price < :maxPrice";
+                sql += ">= :minPrice and p.price <= :maxPrice";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("minPrice", productFilter.getMinPrice().doubleValue());
                 query.setParameter("maxPrice", productFilter.getMaxPrice().doubleValue());
             } else if (productFilter.getMinPrice() != null) {
-                sql += "> :minPrice";
+                sql += ">= :minPrice";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("minPrice", productFilter.getMinPrice().doubleValue());
             } else {
-                sql += "< :maxPrice";
+                sql += "<= :maxPrice";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("maxPrice", productFilter.getMaxPrice().doubleValue());
             }
@@ -69,16 +69,16 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             String sql = "from Product p where p.availableQuantity ";
             Query query = null;
             if (productFilter.getMinAvailableQuantity() != null && productFilter.getMaxAvailableQuantity() != null) {
-                sql += "> :minAvailableQuantity and and p.availableQuantity < :maxAvailableQuantity";
+                sql += ">= :minAvailableQuantity and p.availableQuantity <= :maxAvailableQuantity";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("minAvailableQuantity", productFilter.getMinAvailableQuantity().intValue());
                 query.setParameter("maxAvailableQuantity", productFilter.getMaxAvailableQuantity().intValue());
             } else if (productFilter.getMinAvailableQuantity() != null) {
-                sql += "> :minAvailableQuantity";
+                sql += ">= :minAvailableQuantity";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("minAvailableQuantity", productFilter.getMinAvailableQuantity().intValue());
             } else {
-                sql += "< :maxAvailableQuantity";
+                sql += "<= :maxAvailableQuantity";
                 query = entityManager.createQuery(sql, Product.class);
                 query.setParameter("maxAvailableQuantity", productFilter.getMaxAvailableQuantity().intValue());
             }

@@ -21,12 +21,4 @@ public class UserService {
                                   .orElseThrow(() -> new ResourceNotFoundException("User not found with given id: " + userId));
         return user;
     }
-
-    /** Updates user with given user id */
-    public User update(String userId, User user) throws ResourceNotFoundException {
-        userRepository.findById(userId)
-                      .orElseThrow(() -> new ResourceNotFoundException("User not found with given id: " + userId));
-        userRepository.save(user);
-        return user;
-    }
 }

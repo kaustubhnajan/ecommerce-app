@@ -73,7 +73,9 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorResponse.class)
     })
     @PostMapping()
-    public OrderDTO place(@PathVariable String userId) {
+    public OrderDTO place(@PathVariable String userId, @RequestParam(name = "Card Number") String cardNumber,
+                          @RequestParam(name = "Expiry Month") int expiryMonth, @RequestParam(name = "Expiry Day") int expiryDay,
+                          @RequestParam int cvv) {
         Order order = orderService.placeOrder(userId);
 
         List<Order.OrderedProduct> orderedProducts = order.getProducts();

@@ -92,7 +92,7 @@ public class ProductController {
             @ApiResponse(code = 404, message = "Not Found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorResponse.class)
     })
-    @PutMapping
+    @PutMapping("/{productId}")
     public ProductDTO update(@PathVariable String productId, @RequestParam String userId,
                              @RequestBody ProductDTO productDTO) {
         productService.update(userId, productId, new Product(productDTO.getId(), productDTO.getName(), productDTO.getType(),

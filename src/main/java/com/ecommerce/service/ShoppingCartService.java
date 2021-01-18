@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Shopping cart service
@@ -45,6 +47,17 @@ public class ShoppingCartService {
         List<User.CartProduct> existingProducts = shoppingCart.getProducts();
 
         List<User.CartProduct> productsToAdd = new ArrayList<>();
+        Map<String, User.CartProduct> existingProductMap = new HashMap<>();
+
+        existingProducts.parallelStream().forEach(existingProduct -> {
+            if (!productIdQuantityDTOs.parallelStream()
+                    .filter(productIdQuantityDTO -> productIdQuantityDTO.getProductId().equals(existingProduct.getProductId()))
+                    .findFirst().isPresent()) {
+                productsToAdd.add(existingProduct);
+            }
+            existingProductMap.put(existingProduct.getProductId(), existingProduct);
+        });
+
         productIdQuantityDTOs.parallelStream().forEach(productIdQuantityDTO -> {
             Product product = productRepository.findById(productIdQuantityDTO.getProductId())
                                                .orElseThrow(() -> new ResourceNotFoundException(
@@ -55,10 +68,7 @@ public class ShoppingCartService {
                         "Insufficient quantity for product with given id: " + productIdQuantityDTO.getProductId());
             }
 
-            User.CartProduct cartProduct
-                    = existingProducts.parallelStream()
-                                      .filter(existingProduct -> existingProduct.getProductId().equals(productIdQuantityDTO.getProductId()))
-                                      .findFirst().orElse(null);
+            User.CartProduct cartProduct = existingProductMap.get(productIdQuantityDTO.getProductId());
 
             if (cartProduct != null) {
                 cartProduct.setQuantity(cartProduct.getQuantity() + productIdQuantityDTO.getQuantity());
@@ -92,11 +102,19 @@ public class ShoppingCartService {
                                   .orElseThrow(() -> new ResourceNotFoundException("User not found with given id: " + userId));
 
         User.ShoppingCart shoppingCart = user.getCart();
-        List<User.CartProduct> products = shoppingCart.getProducts();
+        List<User.CartProduct> existingProducts = shoppingCart.getProducts();
 
         List<User.CartProduct> productsToUpdate = new ArrayList<>();
+        existingProducts.parallelStream().forEach(existingProduct -> {
+            if (!productIdQuantityDTOs.parallelStream()
+                    .filter(productIdQuantityDTO -> productIdQuantityDTO.getProductId().equals(existingProduct.getProductId()))
+                    .findFirst().isPresent()) {
+                productsToUpdate.add(existingProduct);
+            }
+        });
+
         productIdQuantityDTOs.parallelStream().forEach(productIdQuantityDTO -> {
-            User.CartProduct cartProduct = products.parallelStream()
+            User.CartProduct cartProduct = existingProducts.parallelStream()
                                                    .filter(product -> product.getProductId().equals(productIdQuantityDTO.getProductId()))
                                                    .findFirst()
                                                    .orElseThrow(() -> new ResourceNotFoundException(

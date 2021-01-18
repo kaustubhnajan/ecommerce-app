@@ -30,17 +30,4 @@ public class UserController {
         return new UserDTO(user.getId(), user.getEmailId(), user.getFname(), user.getLname(), user.getMobile(),
                 user.getAddress(), user.getType());
     }
-
-    @ApiOperation(value = "Updates a specific user with given id", response = UserDTO.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = UserDTO.class),
-            @ApiResponse(code = 404, message = "Not Found", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorResponse.class)
-    })
-    @PutMapping
-    public UserDTO update(@PathVariable String userId, @RequestBody UserDTO userDTO) {
-        userService.update(userId, new User(userDTO.getId(), userDTO.getEmailId(), userDTO.getFname(),
-                userDTO.getLname(), userDTO.getMobile(), userDTO.getAddress(), userDTO.getType()));
-        return userDTO;
-    }
 }

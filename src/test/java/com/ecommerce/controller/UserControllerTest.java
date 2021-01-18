@@ -46,25 +46,4 @@ public class UserControllerTest {
                 "\"lname\":\"User\",\"mobile\":\"1234567890\",\"address\":\"testAddress\",\"type\":\"CUSTOMER\"}";
         JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), true);
     }
-
-    @Test
-    public void update_validUser_success() throws Exception {
-        User updatedUser = new User("testUser", "testUser@abc.com", "Updated Test",
-                "Updated User","1234567890", "Updated testAddress", User.UserType.CUSTOMER);
-
-        String updatedUserJson = "{\"id\":\"testUser\",\"emailId\":\"testUser@abc.com\",\"fname\":\"Updated Test\"," +
-                "\"lname\":\"Updated User\",\"mobile\":\"1234567890\",\"address\":\"Updated testAddress\",\"type\":\"CUSTOMER\"}";
-
-        Mockito.when(userService.update("testUser", updatedUser)).thenReturn(updatedUser);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.put(
-                "/api/user/testUser").accept(MediaType.APPLICATION_JSON)
-                .content(updatedUserJson).contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"id\":\"testUser\",\"emailId\":\"testUser@abc.com\",\"fname\":\"Updated Test\"," +
-                "\"lname\":\"Updated User\",\"mobile\":\"1234567890\",\"address\":\"Updated testAddress\",\"type\":\"CUSTOMER\"}\n";
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), true);
-    }
 }

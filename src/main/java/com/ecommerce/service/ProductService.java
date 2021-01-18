@@ -3,6 +3,7 @@ package com.ecommerce.service;
 import com.ecommerce.exception.AccessRightException;
 import com.ecommerce.exception.ResourceAlreadyExistException;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.exception.ValidationException;
 import com.ecommerce.model.Product;
 import com.ecommerce.model.User;
 import com.ecommerce.repository.ProductRepository;
@@ -32,6 +33,8 @@ public class ProductService {
         if (user.getType() != User.UserType.SELLER) {
             throw new AccessRightException("Only user of type seller can add the product to the system");
         }
+
+        product.isValid();
 
         Optional<Product> existingProduct = productRepository.findById(product.getId());
         if (existingProduct.isPresent()) {
@@ -66,7 +69,10 @@ public class ProductService {
     public List<Product> getByFilter(Product.ProductFilter productFilter) {
         Set<Product> products = new HashSet<>();
         if (!AppUtils.isEmpty(productFilter.getId())) {
-            products.addAll(productRepository.findAll());
+            Product product = productRepository.findById(productFilter.getId()).orElse(null);
+            if (product != null) {
+                products.add(product);
+            }
         }
         products.addAll(productRepository.getProductByFilter(productFilter));
         return new ArrayList<>(products);
@@ -87,6 +93,12 @@ public class ProductService {
         if (user.getType() != User.UserType.SELLER) {
             throw new AccessRightException("Only user of type seller can update the product to the system");
         }
+
+        if (!product.getId().equals(productId)) {
+            throw new ValidationException("Product id cannot be changed");
+        }
+
+        product.isValid();
 
         productRepository.findById(productId)
                          .orElseThrow(() -> new ResourceNotFoundException(
