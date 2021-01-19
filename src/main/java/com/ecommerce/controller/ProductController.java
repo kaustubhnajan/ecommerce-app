@@ -109,7 +109,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorResponse.class)
     })
     @ResponseBody
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     public String delete(@PathVariable String productId, @RequestParam String userId) {
         productService.delete(userId, productId);
         return "Product is deleted successfully";
