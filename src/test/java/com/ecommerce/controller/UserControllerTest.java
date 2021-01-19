@@ -38,7 +38,7 @@ public class UserControllerTest {
         Mockito.when(userService.get("testUser")).thenReturn(user);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
-                "/api/user/testUser").accept(MediaType.APPLICATION_JSON);
+                "/api/users/testUser").accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 

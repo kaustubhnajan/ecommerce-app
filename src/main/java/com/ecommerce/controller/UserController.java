@@ -10,9 +10,9 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@ApiOperation(value = "/api/user/{userId}", tags = "User Controller")
+@ApiOperation(value = "/api/users/{userId}", tags = "User Controller")
 @RestController
-@RequestMapping("/api/user/{userId}")
+@RequestMapping("/api/users/{userId}")
 public class UserController {
 
     @Autowired
